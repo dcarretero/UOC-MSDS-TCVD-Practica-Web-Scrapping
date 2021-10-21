@@ -2,8 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 
 class Recipe:
-    name =''
-    difficulty=''
+    name = ''
+    autor = ''
+    difficulty = ''
     recipeCategory = ''
     recipeCuisine = ''
     description = ''
@@ -11,12 +12,12 @@ class Recipe:
     videoContentUrl = ''
     calories = ''
     totalTime = ''
-    recipeYield=''
-    estimatedCost=''
-    ratingValue=''
-    reviewCount=''
-    dataPublished=''
-    categoryTags= []
+    recipeYield = ''
+    estimatedCost = ''
+    ratingValue = ''
+    reviewCount = ''
+    dataPublished = ''
+    categoryTags = []
 
 
     def loadRecipeFromUrl(self,url):
@@ -25,6 +26,14 @@ class Recipe:
         # Se obtiene el titulo de la receta
         div_recipe = soup.find('div', id="recipe")
         self.name=div_recipe.article.section.header.h1.text.strip()
+        self.image=div_recipe.article.section.header.img.get('src')
+
+        rdr_tags=soup.find_all('span', class_='rdr-tag')
+        self.difficulty=rdr_tags[0].text
+        self.totalTime=rdr_tags[1].text
+        self.recipeYield=rdr_tags[2].text
+        self.ratingValue=soup.find('span', 'rf_average').text
+        self.reviewCount=soup.find('span', 'rf_count').text
 
 if __name__ == '__main__':
     URL = "https://www.recetasderechupete.com/todas/recetas/carnes-aves/recetas-con-pollo/"
@@ -51,5 +60,12 @@ if __name__ == '__main__':
             currentRecipe=Recipe()
             currentRecipe.loadRecipeFromUrl(recipe['href'])
             recipes.append(currentRecipe)
+            break
+        break
     #Evidencia de que se ha guardado bien
-    print(recipes[0].name)
+    print("receta name: " + recipes[0].name)
+    print("receta image: " + recipes[0].image)
+    print("receta difficulty: " + recipes[0].difficulty)
+    print("receta totalTime: " + recipes[0].totalTime)
+    print("receta recipeYield: " + recipes[0].recipeYield)
+    print("receta ratingValue: " + recipes[0].ratingValue)
