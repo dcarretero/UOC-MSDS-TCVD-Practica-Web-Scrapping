@@ -1,11 +1,26 @@
 import requests
+import os
+import csv
 from bs4 import BeautifulSoup
+
+def extract_csv(recipes):
+    ruta = os.path.dirname(os.path.abspath(__file__)) + "\\datasets\\recetasDataset.csv"
+    with open(ruta,'w', newline='') as file:
+        writer = csv.writer(file,delimiter=";")
+        writer.writerow(["url","name","author","difficulty","image","videoContentUrl",
+                         "calories","totalTime","recipeYield","estimatedCost","ratingValue","reviewCount",
+                         "ingredients","categoryTags"])
+        for recipe in recipes:
+            writer.writerow([recipe.url,recipe.name,recipe.author,recipe.difficulty,
+                             recipe.image,recipe.videoContentUrl,recipe.calories,recipe.totalTime,
+                             recipe.recipeYield,recipe.estimatedCost,recipe.ratingValue,
+                             recipe.reviewCount, recipe.ingredients,recipe.categoryTags])
 
 def load_requests(source_url):
     r = requests.get(source_url, stream = True)
     if r.status_code == 200:
         aSplit = source_url.split('/')
-        ruta = "/Users/ivantecles/Desktop/webscraping/PruebaBasica1/Images/"+aSplit[len(aSplit)-1]
+        ruta = os.path.dirname(os.path.abspath(__file__))+"\\Images\\" + aSplit[len(aSplit) - 1]
         print(ruta)
         output = open(ruta,"wb")
         for chunk in r:
@@ -57,8 +72,10 @@ class Recipe:
         self.image = div_recipe.find('img', class_ = 'mainphoto').get('src')
 
         load_requests(self.image)
-
-        self.videoContentUrl = str(div_recipe.find('div', class_ = "wp-block-embed__wrapper").find('iframe').attrs['src'])
+        try:
+            self.videoContentUrl = str(div_recipe.find('div', class_ = "wp-block-embed__wrapper").find('iframe').attrs['src'])
+        except :
+            print ("No hay video de receta: " + self.name)
         self.totalTime = rdr_tags[1].text
         self.recipeYield = rdr_tags[2].text
         self.ratingValue = div_recipe.find('span', class_ = 'rf_average').text
@@ -73,12 +90,12 @@ if __name__ == '__main__':
     tag_current_page=soup.find_all('span', class_ = 'page-numbers current')
     tag_next_page=soup.find_all('a', class_ = 'next page-numbers')
     print(URL)
-    print("numero pagina actual"+ tag_current_page[0].text.strip())
+    print("numero pagina actual" + tag_current_page[0].text.strip())
     while len(tag_next_page)>0 :
         print("url siguiente pagina" + tag_next_page[0]['href'])  # Url de pagina siguiente
         page=requests.get(tag_next_page[0]['href'])
         soup = BeautifulSoup(page.content, "html.parser")
-        url_current_page=tag_next_page[0]['href']
+        url_current_page = tag_next_page[0]['href']
         tag_current_page = soup.find_all('span', class_='page-numbers current')
         tag_next_page = soup.find_all('a', class_='next page-numbers')
         print("url pagina actual" + url_current_page)
@@ -89,8 +106,9 @@ if __name__ == '__main__':
             currentRecipe=Recipe()
             currentRecipe.loadRecipeFromUrl(recipe['href'])
             recipes.append(currentRecipe)
-            break
-        break
+            #break
+        #break
+    extract_csv(recipes)
     # Evidencia de que se ha guardado bien
     print("receta url: " + recipes[0].url)
     print("receta name: " + recipes[0].name)
