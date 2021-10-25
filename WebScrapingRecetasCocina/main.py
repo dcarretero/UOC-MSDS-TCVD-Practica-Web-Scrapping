@@ -50,10 +50,13 @@ class Recipe:
         soup = BeautifulSoup(page.content, "html.parser")
         # Se obtiene el titulo de la receta
         div_recipe = soup.find('div', id="recipe")
-        ingredients = str(div_recipe.find(id="ingredients").find('ul').find_all('li'))
+        ingredients = div_recipe.find(id="ingredients").find('ul').find_all('li')
 
-        rdr_tags=div_recipe.find_all('span', class_='rdr-tag')
-        extrainfo=div_recipe.find(id="extrainfo").find('ul').find_all('li')
+        for index, value in enumerate(ingredients):
+            self.ingredients.append(value.text)
+
+        rdr_tags = div_recipe.find_all('span', class_='rdr-tag')
+        extrainfo = div_recipe.find(id="extrainfo").find('ul').find_all('li')
 
         for index, value in enumerate(extrainfo):
             if index == 0:
@@ -68,7 +71,6 @@ class Recipe:
         self.name = div_recipe.article.section.header.h1.text.strip()
         self.author = div_recipe.find('p', class_ ='rdr-author').find('a').text
         self.difficulty = rdr_tags[0].text
-        self.ingredients = ingredients
         self.image = div_recipe.find('img', class_ = 'mainphoto').get('src')
 
         load_requests(self.image)
