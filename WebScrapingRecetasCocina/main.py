@@ -7,7 +7,7 @@ def extract_csv(recipes):
     ruta = os.path.dirname(os.path.abspath(__file__)) + "\\datasets\\recetasDataset.csv"
     with open(ruta,'w', newline='') as file:
         writer = csv.writer(file,delimiter=";")
-        writer.writerow(["url","name","author","difficulty","image","videoContentUrl",
+        writer.writerow(["url","name","author","difficulty","imageUrl","videoContentUrl",
                          "calories","totalTime","recipeYield","estimatedCost","ratingValue","reviewCount",
                          "ingredients","categoryTags"])
         for recipe in recipes:
