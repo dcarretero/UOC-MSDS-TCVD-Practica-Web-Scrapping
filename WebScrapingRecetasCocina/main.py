@@ -59,14 +59,14 @@ class Recipe:
         extrainfo = div_recipe.find(id="extrainfo").find('ul').find_all('li')
 
         for index, value in enumerate(extrainfo):
-            if index == 0:
+            if "Precio" in value.text:
                 self.estimatedCost = value.text
-            if index == 1:
+            elif "Calorías" in value.text:
                 self.calories = value.text
-            if index == 2:
+            else:
                 categories = value.text
                 self.categoryTags = categories.split(" · ")
-
+                
         self.url = url
         self.name = div_recipe.article.section.header.h1.text.strip()
         self.author = div_recipe.find('p', class_ ='rdr-author').find('a').text
