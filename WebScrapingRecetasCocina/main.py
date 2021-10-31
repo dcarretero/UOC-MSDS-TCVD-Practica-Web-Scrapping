@@ -20,7 +20,7 @@ def load_requests(source_url):
     r = requests.get(source_url, stream = True)
     if r.status_code == 200:
         aSplit = source_url.split('/')
-        ruta = os.path.dirname(os.path.abspath(__file__))+"\\Images\\" + aSplit[len(aSplit) - 1]
+        ruta = os.path.dirname(os.path.abspath(__file__))+"\\images\\" + aSplit[len(aSplit) - 1]
         print(ruta)
         output = open(ruta,"wb")
         for chunk in r:
