@@ -113,7 +113,7 @@ if __name__ == '__main__':
         #break
     #break
     
-    while len(tag_next_page)>0 :
+    while tag_next_page:
         print("url siguiente pagina: " + tag_next_page[0]['href'])  # Url de pagina siguiente
         page=requests.get(tag_next_page[0]['href'])
         soup = BeautifulSoup(page.content, "html.parser")
