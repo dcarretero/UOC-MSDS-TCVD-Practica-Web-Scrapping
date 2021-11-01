@@ -4,7 +4,7 @@ import csv
 from bs4 import BeautifulSoup
 
 def extract_csv(recipes):
-    ruta = os.path.dirname(os.path.abspath(__file__)) + "\\datasets\\recetasDataset.csv"
+    ruta = os.path.dirname(os.path.abspath(__file__)) + "/datasets/recetasDataset.csv"
     with open(ruta,'w', newline='') as file:
         writer = csv.writer(file,delimiter=";")
         writer.writerow(["url","name","author","difficulty","imageUrl","videoContentUrl",
@@ -20,7 +20,7 @@ def load_requests(source_url):
     r = requests.get(source_url, stream = True)
     if r.status_code == 200:
         aSplit = source_url.split('/')
-        ruta = os.path.dirname(os.path.abspath(__file__))+"\\images\\" + aSplit[len(aSplit) - 1]
+        ruta = os.path.dirname(os.path.abspath(__file__))+"/images/" + aSplit[len(aSplit) - 1]
         print(ruta)
         output = open(ruta,"wb")
         for chunk in r:
