@@ -89,12 +89,12 @@ class Recipe:
 
         imageCheck = div_recipe.findAll("img", {"class": "mainphoto"})
         if imageCheck:
-            self.image = div_recipe.find('img', class_='mainphoto').get('src')
+            self.image = div_recipe.find('img', class_ = 'mainphoto').get('src')
             load_requests(self.image)
 
         videoCheck = div_recipe.findAll("div", {"class": "wp-block-embed__wrapper"})
         if videoCheck:
-            self.videoContentUrl = div_recipe.find('div', class_="wp-block-embed__wrapper").find('iframe').attrs['src']
+            self.videoContentUrl = div_recipe.find('div', class_ = "wp-block-embed__wrapper").find('iframe').attrs['src']
 
 
 if __name__ == '__main__':
@@ -115,8 +115,8 @@ if __name__ == '__main__':
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     recipes = []
 
-    tag_current_page = soup.find_all('span', class_='page-numbers current')
-    tag_next_page = soup.find_all('a', class_='next page-numbers')
+    tag_current_page = soup.find_all('span', class_ = 'page-numbers current')
+    tag_next_page = soup.find_all('a', class_ = 'next page-numbers')
     print("numero pagina actual: " + tag_current_page[0].text.strip())
 
     tags_recipes = soup.find_all('a', class_='recipephoto')
@@ -131,9 +131,9 @@ if __name__ == '__main__':
         page = requests.get(tag_next_page[0]['href'])
         soup = BeautifulSoup(page.content, "html.parser")
         url_current_page = tag_next_page[0]['href']
-        tag_next_page = soup.find_all('a', class_='next page-numbers')
+        tag_next_page = soup.find_all('a', class_ ='next page-numbers')
         print("url pagina actual: " + url_current_page)
-        tags_recipes = soup.find_all('a', class_='recipephoto')
+        tags_recipes = soup.find_all('a', class_ ='recipephoto')
         for recipe in tags_recipes:
             print("receta: " + recipe['href'])
             currentRecipe = Recipe()
@@ -141,7 +141,7 @@ if __name__ == '__main__':
             recipes.append(currentRecipe)
 
     extract_csv(recipes)
-    
+
     # Evidencia de que se ha guardado bien
     print("receta url: " + recipes[0].url)
     print("receta name: " + recipes[0].name)
