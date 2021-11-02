@@ -20,7 +20,7 @@ Aparte del dataset de atributos de la receta, mediante el proceso de web scrapin
 
 La aplicación de web scraping sigue la siguiente lógica para llegar a obtener el dataset a partir de las librerías Selenium y BeautifulSoup (se ha remarcado especialmente en qué parte del flujo se ha usado BeautifulSoup y en cual Selenium):
 
-![Representación Gráfica](WebScrapingRecetasCocina/info/diagram.png?raw=true "Representación Gráfica")
+![Representación Gráfica](WebScrapingRecetasCocinaSelenium/info/diagram.png?raw=true "Representación Gráfica")
 
 ## Ficheros del código fuente.
 
