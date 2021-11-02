@@ -3,6 +3,8 @@ import os
 import csv
 from bs4 import BeautifulSoup
 
+# Definimos función extractora de recetas a fichero CSV.
+# Incluimos todas los campos de las recetas como cabeceras.
 def extract_csv(recipes):
     ruta = os.path.dirname(os.path.abspath(__file__)) + "/datasets/recetasDataset.csv"
     with open(ruta, 'w', newline='') as file:
@@ -16,6 +18,7 @@ def extract_csv(recipes):
                              recipe.recipeYield, recipe.estimatedCost, recipe.ratingValue,
                              recipe.reviewCount, recipe.ingredients, recipe.categoryTags])
 
+# Definimos función que carga las imagenes de las recetas.
 def load_requests(source_url):
     r = requests.get(source_url, stream=True)
     if r.status_code == 200:
@@ -27,8 +30,8 @@ def load_requests(source_url):
             output.write(chunk)
         output.close()
 
+# Definimos clase Receta con todos los campos inicializados con sus valores por defecto.
 class Recipe:
-
     def __init__(self):
         self.url = ''
         self.name = ''
@@ -45,18 +48,22 @@ class Recipe:
         self.reviewCount = ''
         self.categoryTags = []
 
+    # Definimos la función que carga la receta a través de la URL.
     def loadRecipeFromUrl(self, url):
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
-        # Se obtiene el titulo de la receta
+
+        # Primero se carga el id=recipe en una variable
         div_recipe = soup.find('div', id="recipe")
 
+        # Desde la variable previamente creada se van cargando todos los campos a través de sus respectivas clases o ids.
         self.url = url
         self.name = div_recipe.article.section.header.h1.text.strip()
         self.author = div_recipe.find('p', class_ ='rdr-author').find('a').text
         self.ratingValue = div_recipe.find('span', class_ = 'rf_average').text
         self.reviewCount = div_recipe.find('span', class_ = 'rf_count').text
 
+        # Se realizan checks para verificar primero si existen antes de cargar objetos que no estén definidos.
         rdrTagsCheck = div_recipe.findAll("span", {"class": "rdr-tag"})
         if rdrTagsCheck:
             rdr_tags = div_recipe.find_all('span', class_='rdr-tag')
@@ -68,6 +75,7 @@ class Recipe:
         if ingredientsCheck:
             ingredients = div_recipe.find(id="ingredients").find('ul').find_all('li')
 
+            # Se recorre el bucle para poder mostrar un objeto con todos los ingredientes.
             for index, value in enumerate(ingredients):
                 self.ingredients.append(value.text)
         
@@ -75,6 +83,7 @@ class Recipe:
         if extrainfoCheck:
             extrainfo = div_recipe.find(id="extrainfo").find('ul').find_all('li')
 
+            # Se recorre el bucle para poder filtrar por Precio, Calorías y Categorías según haya (no todas las recetas contienen toda la información).
             for index, value in enumerate(extrainfo):
                 if "Precio" in value.text:
                     self.estimatedCost = value.text
@@ -84,6 +93,7 @@ class Recipe:
                     categories = value.text
                     self.categoryTags = categories.split(" · ")
 
+        # Se realiza un check para verificar primero si existe la imagen, si existe se carga la imagen a través de la función load_requests().
         imageCheck = div_recipe.findAll("img", {"class": "mainphoto"})
         if imageCheck:
             self.image = div_recipe.find('img', class_ = 'mainphoto').get('src')

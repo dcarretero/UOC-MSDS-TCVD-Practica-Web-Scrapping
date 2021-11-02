@@ -6,6 +6,8 @@ import os
 import csv
 from bs4 import BeautifulSoup
 
+# Definimos función extractora de recetas a fichero CSV.
+# Incluimos todas los campos de las recetas como cabeceras.
 def extract_csv(recipes):
     ruta = os.path.dirname(os.path.abspath(__file__)) + "/datasets/recetasDataset.csv"
     with open(ruta, 'w', newline='') as file:
@@ -19,6 +21,7 @@ def extract_csv(recipes):
                              recipe.recipeYield, recipe.estimatedCost, recipe.ratingValue,
                              recipe.reviewCount, recipe.ingredients, recipe.categoryTags])
 
+# Definimos función que carga las imagenes de las recetas.
 def load_requests(source_url):
     r = requests.get(source_url, stream=True)
     if r.status_code == 200:
@@ -30,8 +33,8 @@ def load_requests(source_url):
             output.write(chunk)
         output.close()
 
+# Definimos clase Receta con todos los campos inicializados con sus valores por defecto.
 class Recipe:
-
     def __init__(self):
         self.url = ''
         self.name = ''
@@ -48,18 +51,22 @@ class Recipe:
         self.reviewCount = ''
         self.categoryTags = []
 
+    # Definimos la función que carga la receta a través de la URL.
     def loadRecipeFromUrl(self, url):
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
-        # Se obtiene el titulo de la receta
+
+        # Primero se carga el id=recipe en una variable
         div_recipe = soup.find('div', id="recipe")
 
+        # Desde la variable previamente creada se van cargando todos los campos a través de sus respectivas clases o ids.
         self.url = url
         self.name = div_recipe.article.section.header.h1.text.strip()
         self.author = div_recipe.find('p', class_ ='rdr-author').find('a').text
         self.ratingValue = div_recipe.find('span', class_ = 'rf_average').text
         self.reviewCount = div_recipe.find('span', class_ = 'rf_count').text
 
+        # Se realizan checks para verificar primero si existen antes de cargar objetos que no estén definidos.
         rdrTagsCheck = div_recipe.findAll("span", {"class": "rdr-tag"})
         if rdrTagsCheck:
             rdr_tags = div_recipe.find_all('span', class_='rdr-tag')
@@ -71,6 +78,7 @@ class Recipe:
         if ingredientsCheck:
             ingredients = div_recipe.find(id="ingredients").find('ul').find_all('li')
 
+            # Se recorre el bucle para poder mostrar un objeto con todos los ingredientes.
             for index, value in enumerate(ingredients):
                 self.ingredients.append(value.text)
 
@@ -78,6 +86,7 @@ class Recipe:
         if extrainfoCheck:
             extrainfo = div_recipe.find(id="extrainfo").find('ul').find_all('li')
 
+            # Se recorre el bucle para poder filtrar por Precio, Calorías y Categorías según haya (no todas las recetas contienen toda la información).
             for index, value in enumerate(extrainfo):
                 if "Precio" in value.text:
                     self.estimatedCost = value.text
@@ -87,6 +96,7 @@ class Recipe:
                     categories = value.text
                     self.categoryTags = categories.split(" · ")
 
+        # Se realiza un check para verificar primero si existe la imagen, si existe se carga la imagen a través de la función load_requests().
         imageCheck = div_recipe.findAll("img", {"class": "mainphoto"})
         if imageCheck:
             self.image = div_recipe.find('img', class_ = 'mainphoto').get('src')
@@ -96,7 +106,7 @@ class Recipe:
         if videoCheck:
             self.videoContentUrl = div_recipe.find('div', class_ = "wp-block-embed__wrapper").find('iframe').attrs['src']
 
-
+# Se configura la URL y se llama a la página de inicio.
 if __name__ == '__main__':
     # Configuración Selenium
     chrome_options = Options()
@@ -115,10 +125,12 @@ if __name__ == '__main__':
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     recipes = []
 
+    # Se controla la URL actual y la siguiente para poder navegar entre la paginación.
     tag_current_page = soup.find_all('span', class_ = 'page-numbers current')
     tag_next_page = soup.find_all('a', class_ = 'next page-numbers')
     print("numero pagina actual: " + tag_current_page[0].text.strip())
 
+    # Se recorren todas las recetas y se cargan sus respectivas URLs para el futuro scraping.
     tags_recipes = soup.find_all('a', class_ = 'recipephoto')
     for recipe in tags_recipes:
         print("receta: " + recipe['href'])
@@ -126,6 +138,7 @@ if __name__ == '__main__':
         currentRecipe.loadRecipeFromUrl(recipe['href'])
         recipes.append(currentRecipe)
 
+    # Se repite el proceso hasta que se llegue a la última página.
     while tag_next_page:
         print("url siguiente pagina: " + tag_next_page[0]['href'])  # Url de pagina siguiente
         page = requests.get(tag_next_page[0]['href'])
@@ -140,6 +153,7 @@ if __name__ == '__main__':
             currentRecipe.loadRecipeFromUrl(recipe['href'])
             recipes.append(currentRecipe)
 
+    # Se llama a la función extractora para obtener el dataset final.
     extract_csv(recipes)
 
     # Evidencia de que se ha guardado bien
