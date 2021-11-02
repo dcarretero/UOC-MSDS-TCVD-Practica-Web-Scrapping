@@ -105,7 +105,7 @@ if __name__ == '__main__':
     chrome_options = Options()
     chrome_options.add_argument('--headless')
     # Instanciación del driver
-    driver = webdriver.Chrome(executable_path='drivers/chromedriver.exe', options=chrome_options)
+    driver = webdriver.Chrome(executable_path='drivers/chromedriver', options=chrome_options)
     # Se carga la página principal
     driver.get('https://www.recetasderechupete.com')
     time.sleep(3)  # Se añade una espera por precaución
