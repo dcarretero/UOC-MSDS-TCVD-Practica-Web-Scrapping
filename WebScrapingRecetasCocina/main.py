@@ -5,24 +5,24 @@ from bs4 import BeautifulSoup
 
 def extract_csv(recipes):
     ruta = os.path.dirname(os.path.abspath(__file__)) + "/datasets/recetasDataset.csv"
-    with open(ruta,'w', newline='') as file:
-        writer = csv.writer(file,delimiter=";")
-        writer.writerow(["url","name","author","difficulty","imageUrl","videoContentUrl",
-                         "calories","totalTime","recipeYield","estimatedCost","ratingValue","reviewCount",
-                         "ingredients","categoryTags"])
+    with open(ruta, 'w', newline='') as file:
+        writer = csv.writer(file, delimiter=";")
+        writer.writerow(["url", "name", "author", "difficulty", "imageUrl", "videoContentUrl",
+                         "calories", "totalTime", "recipeYield", "estimatedCost", "ratingValue", "reviewCount",
+                         "ingredients", "categoryTags"])
         for recipe in recipes:
-            writer.writerow([recipe.url,recipe.name,recipe.author,recipe.difficulty,
-                             recipe.image,recipe.videoContentUrl,recipe.calories,recipe.totalTime,
-                             recipe.recipeYield,recipe.estimatedCost,recipe.ratingValue,
-                             recipe.reviewCount, recipe.ingredients,recipe.categoryTags])
+            writer.writerow([recipe.url, recipe.name, recipe.author, recipe.difficulty,
+                             recipe.image, recipe.videoContentUrl, recipe.calories, recipe.totalTime,
+                             recipe.recipeYield, recipe.estimatedCost, recipe.ratingValue,
+                             recipe.reviewCount, recipe.ingredients, recipe.categoryTags])
 
 def load_requests(source_url):
-    r = requests.get(source_url, stream = True)
+    r = requests.get(source_url, stream=True)
     if r.status_code == 200:
         aSplit = source_url.split('/')
-        ruta = os.path.dirname(os.path.abspath(__file__))+"/images/" + aSplit[len(aSplit) - 1]
+        ruta = os.path.dirname(os.path.abspath(__file__)) + "/images/" + aSplit[len(aSplit) - 1]
         print(ruta)
-        output = open(ruta,"wb")
+        output = open(ruta, "wb")
         for chunk in r:
             output.write(chunk)
         output.close()
@@ -45,7 +45,7 @@ class Recipe:
         self.reviewCount = ''
         self.categoryTags = []
 
-    def loadRecipeFromUrl(self,url):
+    def loadRecipeFromUrl(self, url):
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
         # Se obtiene el titulo de la receta
@@ -110,8 +110,6 @@ if __name__ == '__main__':
         currentRecipe=Recipe()
         currentRecipe.loadRecipeFromUrl(recipe['href'])
         recipes.append(currentRecipe)
-        #break
-    #break
     
     while tag_next_page:
         print("url siguiente pagina: " + tag_next_page[0]['href'])  # Url de pagina siguiente
@@ -126,8 +124,7 @@ if __name__ == '__main__':
             currentRecipe=Recipe()
             currentRecipe.loadRecipeFromUrl(recipe['href'])
             recipes.append(currentRecipe)
-            #break
-        #break
+
     extract_csv(recipes)
     # Evidencia de que se ha guardado bien
     print("receta url: " + recipes[0].url)

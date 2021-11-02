@@ -6,7 +6,6 @@ import os
 import csv
 from bs4 import BeautifulSoup
 
-
 def extract_csv(recipes):
     ruta = os.path.dirname(os.path.abspath(__file__)) + "/datasets/recetasDataset.csv"
     with open(ruta, 'w', newline='') as file:
@@ -20,7 +19,6 @@ def extract_csv(recipes):
                              recipe.recipeYield, recipe.estimatedCost, recipe.ratingValue,
                              recipe.reviewCount, recipe.ingredients, recipe.categoryTags])
 
-
 def load_requests(source_url):
     r = requests.get(source_url, stream=True)
     if r.status_code == 200:
@@ -31,7 +29,6 @@ def load_requests(source_url):
         for chunk in r:
             output.write(chunk)
         output.close()
-
 
 class Recipe:
 
@@ -59,9 +56,9 @@ class Recipe:
 
         self.url = url
         self.name = div_recipe.article.section.header.h1.text.strip()
-        self.author = div_recipe.find('p', class_='rdr-author').find('a').text
-        self.ratingValue = div_recipe.find('span', class_='rf_average').text
-        self.reviewCount = div_recipe.find('span', class_='rf_count').text
+        self.author = div_recipe.find('p', class_ ='rdr-author').find('a').text
+        self.ratingValue = div_recipe.find('span', class_ = 'rf_average').text
+        self.reviewCount = div_recipe.find('span', class_ = 'rf_count').text
 
         rdrTagsCheck = div_recipe.findAll("span", {"class": "rdr-tag"})
         if rdrTagsCheck:
@@ -128,8 +125,6 @@ if __name__ == '__main__':
         currentRecipe = Recipe()
         currentRecipe.loadRecipeFromUrl(recipe['href'])
         recipes.append(currentRecipe)
-        # break
-    # break
 
     while tag_next_page:
         print("url siguiente pagina: " + tag_next_page[0]['href'])  # Url de pagina siguiente
@@ -144,9 +139,9 @@ if __name__ == '__main__':
             currentRecipe = Recipe()
             currentRecipe.loadRecipeFromUrl(recipe['href'])
             recipes.append(currentRecipe)
-            # break
-        # break
+
     extract_csv(recipes)
+    
     # Evidencia de que se ha guardado bien
     print("receta url: " + recipes[0].url)
     print("receta name: " + recipes[0].name)
