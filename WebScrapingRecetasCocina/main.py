@@ -96,14 +96,14 @@ class Recipe:
 if __name__ == '__main__':
     URL = "https://www.recetasderechupete.com/todas/recetas/carnes-aves/recetas-con-pollo/"
     page = requests.get(URL)
-    soup = BeautifulSoup(page.content, "html.parser")
+    soup = BeautifulSoup(page.content, 'html.parser')
     recipes = []
 
     tag_current_page = soup.find_all('span', class_ = 'page-numbers current')
     tag_next_page = soup.find_all('a', class_ = 'next page-numbers')
     print("numero pagina actual: " + tag_current_page[0].text.strip())
     
-    tags_recipes = soup.find_all('a', class_ ='recipephoto')
+    tags_recipes = soup.find_all('a', class_ = 'recipephoto')
     for recipe in tags_recipes:
         print("receta: " + recipe['href'])
         currentRecipe = Recipe()
