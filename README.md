@@ -36,7 +36,10 @@ Se han generado dos proyectos con los siguientes ficheros y directorios:
   * **images**: Directorio donde se almacenan todas las imágenes obtenidas de las recetas.
   * **drivers**: Directorio donde se encuentran los chromedrivers necesarios para Selenium. Es importante que los drivers ubicados en esta carpeta sean los adecuados para el sistema operativo y la versión de chrome donde se ejecute la aplicación. Se puede encontrar mas información en la web https://chromedriver.chromium.org/
 
-  
+## Vídeo.
+
+Por último compartirmos un vídeo explicativo de la práctica: [Vídeo Práctica 1 Daniel Carretero Ivan Tecles](https://drive.google.com/file/d/1vhKH4kwSQTfrpe74VWEiIT55jIdit1JW/view?usp=sharing)
+
 ## Recursos.
 
 1. Subirats, L., Calvo, M. (2018). Web Scraping. Editorial UOC.
